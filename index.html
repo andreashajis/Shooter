@@ -16,7 +16,7 @@ body {
 </head>
 <body>
 	<script type="text/javascript">
-		var game = new Phaser.Game(800, 600, Phaser.AUTO, 'phaser-demo', {
+		var game = new Phaser.Game(700, 500, Phaser.AUTO, 'phaser-demo', {
 			preload : preload,
 			create : create,
 			update : update,
@@ -31,9 +31,9 @@ body {
 		var fireButton;
 		var bulletTimer = 0;
 		var firstEnemy;
-		var ACCLERATION = 600;
-		var DRAG = 400;
-		var MAXSPEED = 400;
+		var ACCLERATION = 700;
+		var DRAG = 500;
+		var MAXSPEED = 500;
 		var laser1;
         	var explosions;
         	var shields;
@@ -44,14 +44,14 @@ body {
 		var secondEnemy;
 		var secondEnemyLaunchTimer;
 		var enemyBullets;
-		var firstEnemySpacing = 1000;
+		var firstEnemySpacing = 900;
 		var secondEnemyLaunched = false;
 		var playerDeath;
 		var explosionsound;
 		
-		var ACCLERATION = 600;
-		var DRAG = 400;
-		var MAXSPEED = 400;
+		var ACCLERATION = 800;
+		var DRAG = 500;
+		var MAXSPEED = 500;
 		function preload() {
 			//  We need this because the assets are on github pages
 			//  Remove the next 2 lines if running locally
@@ -82,7 +82,7 @@ body {
 			game.scale.pageAlignHorizontally = true;
 			
 			//  The scrolling starfield background
-			starfield = game.add.tileSprite(0, 0, 800, 600, 'starfield');
+			starfield = game.add.tileSprite(0, 0, 900, 700, 'starfield');
 			
 			
 			
@@ -98,7 +98,7 @@ body {
 			bullets.setAll('checkWorldBounds', true);
 			//  The hero!
 			player = game.add.sprite(100, game.height / 2, 'ship');
-            		player.health = 150;
+            		player.health = 180;
 			player.anchor.setTo(0.5, 0.5);
 			game.physics.enable(player, Phaser.Physics.ARCADE);
 			player.body.maxVelocity.setTo(MAXSPEED, MAXSPEED);
