@@ -22,6 +22,7 @@ body {
 			render : render
 		});
 		var player;
+		var firstEnemies;
 		var starfield;
 		var cursors;
 		var bank;
@@ -32,17 +33,38 @@ body {
 		var ACCLERATION = 600;
 		var DRAG = 400;
 		var MAXSPEED = 400;
+		
+		// blaster sound
+		var blaster;
+		
+		// background song
+		var song;
+		
+		
+		
+		
 		function preload() {
 			//  We need this because the assets are on github pages
 			//  Remove the next 2 lines if running locally
-			game.load.baseURL = 'https://andreashajis.github.io/Shooter/';
+			game.load.baseURL = 'https://ioniodi.github.io/Shooter/';
 			game.load.crossOrigin = 'anonymous';
 			
 			game.load.image('starfield', 'assets/starfield.png');
 			game.load.image('ship', 'assets/ship.png');
 			game.load.image('bullet', 'assets/bullets/bullet.png');
+			
+			//load first enemies
+			game.load.image('firstEnemies', 'assets/enemies/enemy2.png');
+			
+			//load the sound into the game
+			game.load.audio('blaster','https://examples.phaser.io/assets/audio/SoundEffects/blaster.mp3');
+			game.load.audio('song','https://examples.phaser.io/assets/audio/bodenstaendig_2000_in_rock_4bit.mp3');		
 		}
 		function create() {
+			blaster = game.add.audio('blaster',0.5);
+			
+			song = game.add.audio('song',0.2);	
+			song.play();
 			
 			game.scale.pageAlignHorizontally = true;
 			
@@ -63,6 +85,23 @@ body {
 			game.physics.enable(player, Phaser.Physics.ARCADE);
 			player.body.maxVelocity.setTo(MAXSPEED, MAXSPEED);
 			player.body.drag.setTo(DRAG, DRAG);
+			
+			//  The baddies!
+                        firstEnemies = game.add.group();
+                        firstEnemies.enableBody = true;
+                        firstEnemies.physicsBodyType = Phaser.Physics.ARCADE;
+                        firstEnemies.createMultiple(5, 'enemy-green');
+                        firstEnemies.setAll('anchor.x', 0.5);
+                        firstEnemies.setAll('anchor.y',0.5);
+                        firstEnemies.setAll('scale.x', 0.5);
+                        firstEnemies.setAll('scale.y', 0.5);
+                        firstEnemies.setAll('angle', 90);
+                        firstEnemies.setAll('outOfBoundsKill', true);
+                        firstEnemies.setAll('checkWorldBounds', true);
+                        
+                        launchfirstEnemies();
+			
+			
 			//  And some controls to play the game with
 			cursors = game.input.keyboard.createCursorKeys();
 			fireButton = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
@@ -77,6 +116,7 @@ body {
 			shipTrail.setScale(0.05, 0.4, 0.05, 0.4, 2000,
 					Phaser.Easing.Quintic.Out);
 			shipTrail.start(false, 5000, 10);
+			
 		}
 		function update() {
 			//  Scroll the background
@@ -113,6 +153,7 @@ body {
 			//  Fire bullet
 			if (player.alive && fireButton.isDown) {
 				fireBullet();
+				blaster.play();
 			}
 			//  Keep the shipTrail lined up with the ship
 			shipTrail.y = player.y;
@@ -120,6 +161,8 @@ body {
 		}
 		function render() {
 		}
+		
+		
 		function fireBullet() {
 			//  To avoid them being allowed to fire too fast we set a time limit
 			if (game.time.now > bulletTimer) {
@@ -141,6 +184,23 @@ body {
 				}
 			}
 		}
+		
+		function launchfirstEnemies() {
+                var MIN_ENEMY_SPACING = 300;
+                var MAX_ENEMY_SPACING = 3000;
+                var ENEMY_SPEED = 300;
+                var enemy = firstEnemies.getFirstExists(false);
+    if (enemy) {
+        enemy.reset(game.width,game.rnd.integerInRange(0, game.height));
+	
+        enemy.body.velocity.y = game.rnd.integerInRange(200, -200);
+        enemy.body.velocity.x = -ENEMY_SPEED;
+        enemy.body.drag.y = 100;
+    }
+    //  Send another enemy soon
+    game.time.events.add(game.rnd.integerInRange(MIN_ENEMY_SPACING, MAX_ENEMY_SPACING), launchfirstEnemies);
+}
+		
 	</script>
 </body>
 </html>
