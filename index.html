@@ -117,6 +117,13 @@ body {
 					Phaser.Easing.Quintic.Out);
 			shipTrail.start(false, 5000, 10);
 			
+			 //  Game over text
+		    gameOver = game.add.bitmapText(game.world.centerX, game.world.centerY, 'font', 'You Died!', 120);
+		    gameOver.x = gameOver.x - gameOver.textWidth / 2;
+		    gameOver.y = gameOver.y - gameOver.textHeight / 3;
+		    gameOver.visible = false;
+			
+			
 		}
 		function update() {
 			//  Scroll the background
@@ -162,6 +169,26 @@ body {
 		function render() {
 		}
 		
+				//  Game over?
+			    if (! player.alive && gameOver.visible === false) {
+				gameOver.visible = true;
+				gameOver.alpha = 0;
+				var fadeInGameOver = game.add.tween(gameOver);
+				fadeInGameOver.to({alpha: 1}, 1000, Phaser.Easing.Quintic.Out);
+				fadeInGameOver.onComplete.add(setResetHandlers);
+				fadeInGameOver.start();
+				function setResetHandlers() {
+				    //  The "click to restart" handler
+				    tapRestart = game.input.onTap.addOnce(_restart,this);
+				    spaceRestart = fireButton.onDown.addOnce(_restart,this);
+				    function _restart() {
+				      tapRestart.detach();
+				      spaceRestart.detach();
+				      restart();
+				    }
+				}
+			    }
+		
 		
 		function fireBullet() {
 			//  To avoid them being allowed to fire too fast we set a time limit
@@ -184,6 +211,31 @@ body {
 				}
 			}
 		}
+		
+		
+		function restart () {
+					    //  Reset the enemies
+					    firstEnemy.callAll('kill');
+					    game.time.events.remove(firstEnemyLaunchTimer);
+					    game.time.events.add(1000, launchfirstEnemy);
+					    secondEnemy.callAll('kill');
+					    game.time.events.remove(secondEnemyLaunchTimer);
+					    game.time.events.remove(secondEnemyLaunchTimer);
+					    secondEnemyBullets.callAll('kill');
+					    //  Revive the player
+					    player.revive();
+					    player.health = 100;
+					    shields.render();
+					    score = 0;
+					    scoreText.render();
+      			
+					    //  Hide the text
+					    gameOver.visible = false;
+						
+						//  Reset pacing
+					    firstEnemySpacing = 1000;
+					    secondEnemyLaunched = false;
+					}
 		
 		function launchfirstEnemies() {
                 var MIN_ENEMY_SPACING = 300;
