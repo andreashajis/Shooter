@@ -188,7 +188,12 @@ body {
 				    }
 				}
 			    }
-		
+					//  Check collisions
+			game.physics.arcade.overlap(player, firstEnemy, shipCollide, null, this);
+			game.physics.arcade.overlap(firstEnemy, bullets, hitEnemy, null, this);
+			game.physics.arcade.overlap(player, secondEnemy, shipCollide, null, this);
+			game.physics.arcade.overlap(bullets, secondEnemy, hitEnemy, null, this);
+			game.physics.arcade.overlap(secondEnemyBullets, player, enemyHitsPlayer, null, this);
 		
 		function enemyHitsPlayer (player, bullet) {
 				 
